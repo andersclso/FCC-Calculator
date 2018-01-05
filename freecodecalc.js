@@ -8,6 +8,7 @@ $( document ).ready(function() {
 	mathOperator,
 	tempNum;
 
+	//keyPressed will be the jQuery function that returns the 'id' of each button pressed.
 	const MAKECLICKSWORK = function(keyPressed) {
 
 		switch(keyPressed) {
@@ -21,7 +22,7 @@ $( document ).ready(function() {
 			case '55':
 			case '56':
 			case '57':
-				keypressed = parseInt(keyPressed);
+				keyPressed = parseInt(keyPressed);
 				ENTERNUMBER(keyPressed);
 				break;
 			case 'Multiply':
@@ -50,6 +51,7 @@ $( document ).ready(function() {
 		}
 	}
 
+	//
 	const OPERATENUMBER = function() {
 			switch (mathOperator) {
 				case "divide":
@@ -77,11 +79,12 @@ $( document ).ready(function() {
 
 	const ENTERNUMBER = function(val) {
 
-		//freeze numberBuilder at 9 digits.
+		//Prevents user from creating a number greater than 9 numeral places.
 		if (numberBuilder.length == 9) {
 			return;
 		}
 
+		//checks if number input came from the numpad or regular keys.
 		val > 57 ? convertedNumber = String.fromCharCode(val-48) : convertedNumber = String.fromCharCode(val);
 
 		if (mathThis.length == 0 || mathThis.length == 1 && !isNaN(eq[eq.length-1])) {
@@ -146,7 +149,6 @@ $( document ).ready(function() {
 			tempNum = currentNumber;
 		}
 
-		console.log(eq);
 		$(".results").html(currentNumber);
 		$(".equation").html(eq.join(''));
 	}
@@ -159,7 +161,6 @@ $( document ).ready(function() {
 			eq = ["ans + ", currentNumber];
 			$(".results").html(currentNumber);
 			$(".equation").html(eq.join(''));
-			console.log(eq);
 		}
 		if (mathThis.length == 1) {
 			if (isNaN(eq[eq.length-1])) {
@@ -183,7 +184,6 @@ $( document ).ready(function() {
 			eq = ["ans - ", currentNumber];
 			$(".results").html(currentNumber);
 			$(".equation").html(eq.join(''));
-			console.log(eq);
 		}
 		if (mathThis.length == 1) {
 			if (isNaN(eq[eq.length-1])) {
@@ -207,7 +207,6 @@ $( document ).ready(function() {
 			eq = ["ans × ", currentNumber];
 			$(".results").html(currentNumber);
 			$(".equation").html(eq.join(''));
-			console.log(eq);
 		}
 		if (mathThis.length == 1) {
 			if (isNaN(eq[eq.length-1])) {
@@ -231,7 +230,6 @@ $( document ).ready(function() {
 			eq = ["ans ÷ ", currentNumber];
 			$(".results").html(currentNumber);
 			$(".equation").html(eq.join(''));
-			console.log(eq);
 		}
 		if (mathThis.length == 1) {
 			if (isNaN(eq[eq.length-1])) {
@@ -254,7 +252,6 @@ $( document ).ready(function() {
 			mathOperator = "power";
 			$(".results").html(currentNumber);
 			$(".equation").html(eq.join(''));
-			console.log(eq);
 		}
 		if (mathThis.length == 1) {
 			if (isNaN(eq[eq.length-1])) {
@@ -277,7 +274,6 @@ $( document ).ready(function() {
 		mathThis = [];
 		$(".results").html("0");
 		$(".equation").html(eq.join(''));
-		console.log(eq);
 	}
 
 	const ENTER = function() {
@@ -317,9 +313,9 @@ $( document ).ready(function() {
 
 		$(".results").html(currentNumber);
 		$(".equation").html(eq.join(''));
-		console.log(eq);
 	}
 
+	//This function was created because I needed the display to adjust the font size when numbers were getting too big for the screen.
 	const FONTSIZEADJUST = function(currentNumberLength) {
 		if (currentNumberLength <= 9) {
 			$(".results").css("font-size", "61px");
@@ -365,51 +361,49 @@ $( document ).ready(function() {
 
 window.addEventListener("keydown", function (event) {
 
-		//Add
+		//Add (+)
 		if (event.keyCode == 107 || event.shiftKey && event.keyCode == 187) {
 			ADD();
 		}
 
-		//Subtract
+		//Subtract (-)
 		else if (event.keyCode == 109 || event.keyCode == 189) {
 			SUBTRACT();
 		}
 
-		//Multiply
+		//Multiply (*)
 		else if (event.keyCode == 106 || event.shiftKey && event.keyCode == 56) {
 			MULTIPLY();
 		}
 
-		//Number 8
+		//Number 8 (Since '8' and '*' are the same button, I had to differentiate each by checking if shift was not pressed.)
 		else if (!event.shiftKey && event.keyCode == 56) {
-			//This line saves you a lot of code by allowing convertedNumber to change based on keypressed.
 			convertedNumber = String.fromCharCode(event.keyCode);
 			ENTERNUMBER(event.keyCode);
 		}
 
-		//Divide
+		//Divide (/)
 		else if (event.keyCode == 111 || event.keyCode == 191) {
 			DIVIDE();
 		}
 
-		//Power
+		//Power (^)
 		else if (event.shiftKey && event.keyCode == 54) {
 			POWER();
 		}
 
-		//Number 6
+		//Number 6 (Since '6' and '^' are the same button, I had to differentiate each by checking if shift was not pressed.)
 		else if (!event.shiftKey && event.keyCode == 54) {
-			//This line saves you a lot of code by allowing convertedNumber to change based on keypressed.
 			convertedNumber = String.fromCharCode(event.keyCode);
 			ENTERNUMBER(event.keyCode);
 		}
 
-		//Enter
+		//Enter (return)
 		else if (event.keyCode == 13) {
-			ENTER();			
+			ENTER();		
 		}
 
-		//Clear
+		//Clear (Delete/Backspace)
 		else if (event.keyCode == 8) {
 			CLEAR();
 		}
@@ -427,10 +421,14 @@ window.addEventListener("keydown", function (event) {
 
 });
 
-	$("button").on({
-		click: function() {
-			MAKECLICKSWORK($(this).attr('id'));
-			FONTSIZEADJUST(currentNumber.toString().length);
-		}
-	});
+//I decided to use jQuery here for simplicity. I ran into a bug that was really stumping me here when I used 'click' instead of 'mousedown' since the button that was last
+//clicked was still in-focus causing the calculator to not function properly... (ex. clicking "9, +, 9" and then pressing "enter" on the keyboard would cause weird behaviour).
+//I've yet to confirm the actual reasoning behind this fix but I assume it is because since I set it to mousedown, the button unfocuses after it detects the mouse button is no
+//longer held down.
+$("button").on("mousedown", function() {
+		MAKECLICKSWORK($(this).attr('id'));
+		FONTSIZEADJUST(currentNumber.toString().length);
+		console.log("hello");
+});
+
 });
